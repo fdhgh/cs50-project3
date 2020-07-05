@@ -1,14 +1,25 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render
-from .models import Size
+from .models import *
 
 # Create your views here.
 def index(request):
-    return HttpResponse("Project 3: TODO")
 
+    producttypes = ProductType.objects.all()
 
-def sizes(request):
     context = {
-        "sizes": Size.objects.all()
-    }
-    return render(request, "orders/sizes.html", context)
+        "producttypes": producttypes
+        }
+
+    return render(request, "orders/index.html", context)
+
+
+def create(request, productid):
+
+    product = Product.objects.get(id=productid)
+    context = {
+        "product": product,
+        "toppings": ToppingAddPrice.objects.filter(product=product)
+        }
+
+    return render(request, "orders/create.html", context)

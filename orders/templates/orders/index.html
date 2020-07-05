@@ -1,0 +1,57 @@
+{% extends "orders/base.html" %}
+
+{% block script %}
+{% load static %}
+  <script src="{% static "orders/index.js" %}"></script>
+{% endblock %}
+
+{% block title %}
+    index
+{% endblock %}
+
+
+{% block left %}
+{% endblock %}
+
+{% block body %}
+  {% for pt in producttypes %}
+    <p class="h4">{{pt.name}}</p>
+    <table id="pasta_table" class="side_table">
+        <thead>
+          <tr>
+            <th scope="col">Variant</th>
+            {% if pt.sizelist|length > 1 %}
+              {% for ps in pt.sizelist %}
+                <th scope="col">{{ps.name}}</th>
+              {% endfor %}
+            {% else%}
+                <th scope="col">Price</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for pv in pt.availablevariants.all %}
+            <tr>
+              <td scope="row">{{pv.name}}</td>
+              {% for ps in pt.sizelist %}
+                {% for p in pt.productlist %}
+                  {% if p.variant == pv %}
+                    {% if p.size == ps %}
+                      <td>{{ p.price }}</td>
+                    {% else %}
+                      <td>X</td>
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endfor %}
+
+{% endblock %}
+
+
+{% block right %}
+{% endblock %}

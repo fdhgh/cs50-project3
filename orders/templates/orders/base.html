@@ -3,14 +3,56 @@
     <head>
         <title>{% block title %}{% endblock %}</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+        {% block script %}{% endblock %}
     </head>
     <body>
-      <h1>Sizes</h1>
+            <div class="container">
+              <div class="row">
+                <div class="col-1">
+                </div>
+                <div class="col-7">
+                  <p class="h1">Pinochio's Pizzas & Subs</p>
+                </div>
+                <div class="col-4">
+                </div>
+              </div>
+            </div>
 
-      {% for size in sizes %}
-        <li>
-                {{ size }}
-        </li>
-      {% endfor %}
-    </body>
+            <div class="container">
+              <div class="row">
+                <div class="col-12">
+                  <hr>
+                </div>
+            </div>
+
+            <div class="container">
+              <div class="row">
+                <div class="col-1">
+                  {% block left %}
+                  {% endblock %}
+                </div>
+                <div class="col-7">
+                  {% block body %}
+                  {% endblock %}
+                </div>
+                <div class="col-4">
+                  {% block right %}
+                  {% endblock %}
+                  <div>
+                    <p class="h3">Cart</p>
+                    {% if cart|length > 1 %}
+                      {% for ch in data.channels %}
+                      <p>Item 1 {{ item.name }} £{{ item.price }}</p>
+                      {% endfor %}
+                      <hr>
+                      <p>Total: £x.xx</p>
+                    {% else %}
+                      <p>Your cart is empty!</p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+        </body>
 </html>
