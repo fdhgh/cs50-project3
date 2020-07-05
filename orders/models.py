@@ -23,7 +23,7 @@ class ProductType(models.Model):
     availablevariants = models.ManyToManyField(Variant, blank=True, related_name="oftypes")
 
     def listproducts(self):
-        return Product.objects.filter(type = self).order_by('-size','variant')
+        return Product.objects.filter(type = self).order_by('variant','-size')
 
     def listsizes(self):
         sizelist = []
@@ -45,7 +45,9 @@ class Product(models.Model):
        unique_together = ('type', 'variant', 'size', 'price')
 
     def __str__(self):
-        return f"{self.size.name} {self.variant.name} {self.type.name}"
+        return f"{self.size.name} {self.type.name}: {self.variant.name} - ${self.price}"
+
+
 
 class Pizza(Product):
     base = models.ForeignKey(PizzaBase, on_delete=models.CASCADE, related_name="pizzas",blank=True)#null=True because some menu items have no base
@@ -64,6 +66,7 @@ class ToppingAddPrice(models.Model):
 class Item(models.Model):
     product = models.ForeignKey(Product,on_delete=models.CASCADE, related_name="items")
     toppings = models.ManyToManyField(Topping, blank=True, related_name="items")
+    price = models.FloatField()
 
     def __str__(self):
         return f"Item costs ${self.product.price}"

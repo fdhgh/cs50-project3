@@ -10,22 +10,20 @@
 
 {% block body %}
   <p class="h3">{{product}}</p>
-  <table id="pasta_table" class="side_table">
-      <thead>
-        <tr>
-          <th scope="col">Topping</th>
-          <th scope="col">Additional Price</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for t in toppings %}
-          <tr>
-            <th scope="row">{{t.topping.name}}</th>
-            <td>{{t.addprice}}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <form action="{% url 'addtoorder' product.id %}" method="post">
+        {% csrf_token %}
+        {% if toppings|length > 0 %}
+            {% for t in toppings %}
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="toppings" value="{{ t.id }}" id="check{{ t.id }}">
+                <label class="form-check-label" for="check"+{{ t.topping.name }}>
+                  {{ t.topping.name }} +${{ t.addprice }}
+                </label>
+              </div>
+            {% endfor %}
+        {% endif %}
+        <input type="submit" value="Add to order" />
+    </form>
 
 {% endblock %}
 

@@ -27,16 +27,15 @@ class Command(BaseCommand):
     ## import Products
     for productname, basename, variantname, sizename, price in productData:
 
+        if basename != '': # products have no base
+            variantname = base + ' ' + variantname
+
         type = checkadd(productname, ProductType)
         variant = checkadd(variantname, Variant)
         size = checkadd(sizename, Size)
         type.availablevariants.add(variant)
 
-        if basename == '': # products have no base
-            product = Product(type=type,variant=variant,size=size,price=float(price))
-        else:              # except pizza which has a base
-            base = checkadd(basename,PizzaBase)
-            product = Pizza(type=type,variant=variant,size=size,price=price,base=base)
+        product = Product(type=type,variant=variant,size=size,price=float(price))
 
         try:
             product = Product.objects.get(type=type, variant=variant, size=size)
