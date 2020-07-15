@@ -1,0 +1,29 @@
+{% extends "orders/base.html" %}
+{% block body %}
+                  <div>
+                    <p class="h3">Cart</p>
+                      {% for item in cart.items.all %}
+                        <p>{{item.product.size}} {{ item.product.type.name }} {{item.product.variant.name}} £{{ item.price }}
+                          {% if cart.status.name == "New" %}
+                            <a href="{% url 'removefromorder' item.id %}" method="post"> X </a>
+                          {% endif %}
+                          </p>
+                        {% if item.toppings.all|length > 0 %}
+                          {% for topping in item.toppings.all %}
+                            <p> + {{topping.name}} </p>
+                          {% endfor %}
+                        {% endif %}
+
+                      {% endfor %}
+                      <hr>
+                      <p>Total: £{{total}}</p>
+                      {% if cart.status.name == "New" %}
+                        <p><a href="{% url 'order' cart.id%}">Place order</a></p>
+                      {% elif cart.status.name == "Paid" %}
+                        <p>Your order has been placed!</p>
+                      {% else %}
+                        <p>Order status: {{ cart.status }}</p>
+                      {% endif %}
+                      <p><a href="{% url 'menu'%}">Back to menu</a></p>
+                  </div>
+{% endblock %}

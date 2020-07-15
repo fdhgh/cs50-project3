@@ -1,69 +1,69 @@
-﻿Product,Base,Variant,Size,Price
-Pizza,Regular,Cheese,Small,12.7
-Pizza,Regular,Cheese,Large,17.95
-Pizza,Regular,1 topping,Small,13.7
-Pizza,Regular,1 topping,Large,19.95
-Pizza,Regular,2 toppings,Small,15.2
-Pizza,Regular,2 toppings,Large,21.95
-Pizza,Regular,3 toppings,Small,16.2
-Pizza,Regular,3 toppings,Large,23.95
-Pizza,Regular,Special,Small,17.75
-Pizza,Regular,Special,Large,25.95
-Pizza,Sicilian,Cheese,Small,24.45
-Pizza,Sicilian,Cheese,Large,38.7
-Pizza,Sicilian,1 topping,Small,26.45
-Pizza,Sicilian,1 topping,Large,40.7
-Pizza,Sicilian,2 toppings,Small,28.45
-Pizza,Sicilian,2 toppings,Large,42.7
-Pizza,Sicilian,3 toppings,Small,29.45
-Pizza,Sicilian,3 toppings,Large,44.7
-Pizza,Sicilian,Special,Small,30.45
-Pizza,Sicilian,Special,Large,45.7
-Sub,,Cheese,Small,6.5
-Sub,,Italian,Small,6.5
-Sub,,Ham + Cheese,Small,6.5
-Sub,,Meatball,Small,6.5
-Sub,,Tuna,Small,6.5
-Sub,,Turkey,Small,7.5
-Sub,,Chicken Parmigiana,Small,7.5
-Sub,,Eggplant Parmigiana,Small,6.5
-Sub,,Steak,Small,6.5
-Sub,,Steak + Cheese,Small,6.95
-Sub,,"Sausage, Peppers & Onions",Large,8.5
-Sub,,Hamburger,Small,4.6
-Sub,,Cheeseburger,Small,5.1
-Sub,,Fried Chicken,Small,6.95
-Sub,,Veggie,Small,6.95
-Sub,,Cheese,Large,7.95
-Sub,,Italian,Large,7.95
-Sub,,Ham + Cheese,Large,7.95
-Sub,,Meatball,Large,7.95
-Sub,,Tuna,Large,7.95
-Sub,,Turkey,Large,8.5
-Sub,,Chicken Parmigiana,Large,8.5
-Sub,,Eggplant Parmigiana,Large,7.95
-Sub,,Steak,Large,7.95
-Sub,,Steak + Cheese,Large,8.5
-Sub,,Hamburger,Large,6.95
-Sub,,Cheeseburger,Large,7.45
-Sub,,Fried Chicken,Large,8.5
-Sub,,Veggie,Large,8.5
-Pasta,,Baked Ziti w/Mozzarella,Regular,6.5
-Pasta,,Baked Ziti w/Meatballs,Regular,8.75
-Pasta,,Baked Ziti w/Chicken,Regular,9.75
-Salad,,Garden Salad,Regular,6.25
-Salad,,Greek Salad,Regular,8.25
-Salad,,Antipasto,Regular,8.25
-Salad,,Salad w/Tuna,Regular,8.25
-Dinner Platter,,Garden Salad,Small,40
-Dinner Platter,,Greek Salad,Small,50
-Dinner Platter,,Antipasto,Small,50
-Dinner Platter,,Baked Ziti,Small,40
-Dinner Platter,,Meatball Parm,Small,50
-Dinner Platter,,Chicken Parm,Small,55
-Dinner Platter,,Garden Salad,Large,65
-Dinner Platter,,Greek Salad,Large,75
-Dinner Platter,,Antipasto,Large,75
-Dinner Platter,,Baked Ziti,Large,65
-Dinner Platter,,Meatball Parm,Large,75
-Dinner Platter,,Chicken Parm,Large,85
+﻿Product,Base,Variant,Size,Price,IncludedToppings
+Pizza,Regular,Cheese,Small,12.7,
+Pizza,Regular,Cheese,Large,17.95,
+Pizza,Regular,1 topping,Small,13.7,1
+Pizza,Regular,1 topping,Large,19.95,1
+Pizza,Regular,2 toppings,Small,15.2,2
+Pizza,Regular,2 toppings,Large,21.95,2
+Pizza,Regular,3 toppings,Small,16.2,3
+Pizza,Regular,3 toppings,Large,23.95,3
+Pizza,Regular,Special,Small,17.75,
+Pizza,Regular,Special,Large,25.95,
+Pizza,Sicilian,Cheese,Small,24.45,
+Pizza,Sicilian,Cheese,Large,38.7,
+Pizza,Sicilian,1 topping,Small,26.45,
+Pizza,Sicilian,1 topping,Large,40.7,
+Pizza,Sicilian,2 toppings,Small,28.45,
+Pizza,Sicilian,2 toppings,Large,42.7,
+Pizza,Sicilian,3 toppings,Small,29.45,
+Pizza,Sicilian,3 toppings,Large,44.7,
+Pizza,Sicilian,Special,Small,30.45,
+Pizza,Sicilian,Special,Large,45.7,
+Sub,,Cheese,Small,6.5,
+Sub,,Italian,Small,6.5,
+Sub,,Ham + Cheese,Small,6.5,
+Sub,,Meatball,Small,6.5,
+Sub,,Tuna,Small,6.5,
+Sub,,Turkey,Small,7.5,
+Sub,,Chicken Parmigiana,Small,7.5,
+Sub,,Eggplant Parmigiana,Small,6.5,
+Sub,,Steak,Small,6.5,
+Sub,,Steak + Cheese,Small,6.95,
+Sub,,"Sausage, Peppers & Onions",Large,8.5,
+Sub,,Hamburger,Small,4.6,
+Sub,,Cheeseburger,Small,5.1,
+Sub,,Fried Chicken,Small,6.95,
+Sub,,Veggie,Small,6.95,
+Sub,,Cheese,Large,7.95,
+Sub,,Italian,Large,7.95,
+Sub,,Ham + Cheese,Large,7.95,
+Sub,,Meatball,Large,7.95,
+Sub,,Tuna,Large,7.95,
+Sub,,Turkey,Large,8.5,
+Sub,,Chicken Parmigiana,Large,8.5,
+Sub,,Eggplant Parmigiana,Large,7.95,
+Sub,,Steak,Large,7.95,
+Sub,,Steak + Cheese,Large,8.5,
+Sub,,Hamburger,Large,6.95,
+Sub,,Cheeseburger,Large,7.45,
+Sub,,Fried Chicken,Large,8.5,
+Sub,,Veggie,Large,8.5,
+Pasta,,Baked Ziti w/Mozzarella,Regular,6.5,
+Pasta,,Baked Ziti w/Meatballs,Regular,8.75,
+Pasta,,Baked Ziti w/Chicken,Regular,9.75,
+Salad,,Garden Salad,Regular,6.25,
+Salad,,Greek Salad,Regular,8.25,
+Salad,,Antipasto,Regular,8.25,
+Salad,,Salad w/Tuna,Regular,8.25,
+Dinner Platter,,Garden Salad,Small,40,
+Dinner Platter,,Greek Salad,Small,50,
+Dinner Platter,,Antipasto,Small,50,
+Dinner Platter,,Baked Ziti,Small,40,
+Dinner Platter,,Meatball Parm,Small,50,
+Dinner Platter,,Chicken Parm,Small,55,
+Dinner Platter,,Garden Salad,Large,65,
+Dinner Platter,,Greek Salad,Large,75,
+Dinner Platter,,Antipasto,Large,75,
+Dinner Platter,,Baked Ziti,Large,65,
+Dinner Platter,,Meatball Parm,Large,75,
+Dinner Platter,,Chicken Parm,Large,85,

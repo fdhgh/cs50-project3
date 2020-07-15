@@ -1,6 +1,11 @@
 import csv
 from django.core.management.base import BaseCommand, CommandError
 from orders.models import *
+import decimal
+
+def toCents(price):
+    decimal.getcontext().prec = 2
+    return decimal.Decimal(price)
 
 def checkadd(objname, classname):
     if objname == '':
@@ -25,17 +30,21 @@ class Command(BaseCommand):
     productData = list(productReader)
 
     ## import Products
-    for productname, basename, variantname, sizename, price in productData:
+    for productname, basename, variantname, sizename, price, includedtoppings in productData:
 
-        if basename != '': # products have no base
-            variantname = base + ' ' + variantname
+        if basename != '': # non-pizza products have no base
+            productname = basename + ' ' + productname
 
         type = checkadd(productname, ProductType)
         variant = checkadd(variantname, Variant)
         size = checkadd(sizename, Size)
         type.availablevariants.add(variant)
 
-        product = Product(type=type,variant=variant,size=size,price=float(price))
+        if includedtoppings != '':
+            variant.includedtoppings = int(includedtoppings)
+            variant.save()
+
+        product = Product(type=type,variant=variant,size=size,price=toCents(price))
 
         try:
             product = Product.objects.get(type=type, variant=variant, size=size)
@@ -48,7 +57,7 @@ class Command(BaseCommand):
     next(toppingReader, None)  # skip the headers
     toppingData = list(toppingReader)
 
-    ## import Products
+    ## import ToppingAddPrices and Toppings
     for toppingname, productname, variantname, sizename, addprice in toppingData:
 
         topping = checkadd(toppingname, Topping)
@@ -62,14 +71,16 @@ class Command(BaseCommand):
                 tap = ToppingAddPrice.objects.get(topping = topping, product=product)
                 print(f'ToppingAddPrice already exists: {toppingname} on {productname} {variantname} {sizename}')
             except ToppingAddPrice.DoesNotExist:
-                tap = ToppingAddPrice(topping = topping, product=product, addprice=float(addprice))
+                tap = ToppingAddPrice(topping = topping, product=product, addprice=toCents(addprice))
                 tap.save()
                 print('obj added: ToppingAddPrice ' + toppingname)
         except Product.DoesNotExist:
             print(f'topping not added: {toppingname} on {productname} {variantname} {sizename} - no such product exists.')
 
 
-
+    statusnames = ["New","Paid","Accepted","Out for delivery","Delivered"]
+    for statusname in statusnames:
+        checkadd(statusname, Status)
 
 
 

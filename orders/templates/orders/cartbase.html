@@ -1,0 +1,22 @@
+{% extends "orders/base.html" %}
+{% block cart %}
+                  <div>
+                    <p class="h3">Cart</p>
+                    {% if cart.items.all|length > 0 %}
+                      {% for item in cart.items.all %}
+                        <p>{{item.product.size}} {{ item.product.type.name }} {{item.product.variant.name}} £{{ item.price }}<a href="{% url 'removefromorder' item.id %}" method="post"> X </a></p>
+                        {% if item.toppings.all|length > 0 %}
+                          {% for topping in item.toppings.all %}
+                            <p> + {{topping.name}} </p>
+                          {% endfor %}
+                        {% endif %}
+
+                      {% endfor %}
+                      <hr>
+                      <p>Total: £{{total}}</p>
+                      <p><a href="{% url 'confirm'%}">Confirm</a></p>
+                    {% else %}
+                      <p>Your cart is empty!</p>
+                    {% endif %}
+                  </div>
+{% endblock %}

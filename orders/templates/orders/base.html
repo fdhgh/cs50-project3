@@ -15,6 +15,14 @@
                   <p class="h1">Pinochio's Pizzas & Subs</p>
                 </div>
                 <div class="col-4">
+                  {% if user.is_authenticated %}
+                    <p>Logged in as {{ user.username }}.
+                    <a href="{% url 'index'%}">Logout</a></p>
+                  {% else %}
+                    <p>You are not logged in.
+                    <a href="{% url 'index' %}">Login</a>
+                  {% endif %}
+                  </p>
                 </div>
               </div>
             </div>
@@ -39,18 +47,8 @@
                 <div class="col-4">
                   {% block right %}
                   {% endblock %}
-                  <div>
-                    <p class="h3">Cart</p>
-                    {% if cart|length > 1 %}
-                      {% for ch in data.channels %}
-                      <p>Item 1 {{ item.name }} £{{ item.price }}</p>
-                      {% endfor %}
-                      <hr>
-                      <p>Total: £x.xx</p>
-                    {% else %}
-                      <p>Your cart is empty!</p>
-                    {% endif %}
-                  </div>
+                  {% block cart %}
+                  {% endblock %}
                 </div>
               </div>
             </div>

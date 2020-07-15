@@ -1,4 +1,4 @@
-{% extends "orders/base.html" %}
+{% extends "orders/cartbase.html" %}
 
 {% block title %}
     Create Your Order
@@ -12,8 +12,8 @@
   <p class="h3">{{product}}</p>
     <form action="{% url 'addtoorder' product.id %}" method="post">
         {% csrf_token %}
-        {% if toppings|length > 0 %}
-            {% for t in toppings %}
+        {% if producttoppings|length > 0 %}
+            {% for t in producttoppings %}
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" name="toppings" value="{{ t.id }}" id="check{{ t.id }}">
                 <label class="form-check-label" for="check"+{{ t.topping.name }}>
@@ -22,8 +22,23 @@
               </div>
             {% endfor %}
         {% endif %}
+
+        {% if pizzatoppings|length > 0 %}
+            {% for pt in pizzatoppings %}
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="pizzatoppings" value="{{ pt.name }}" id="check{{ pt.name }}">
+                <label class="form-check-label" for="check"+{{ pt.name }}>
+                  {{ pt.name }}
+                </label>
+              </div>
+            {% endfor %}
+        {% endif %}
+
         <input type="submit" value="Add to order" />
     </form>
+    {% for message in messages %}
+      <p>{{ message }}</p>
+    {% endfor %}
 
 {% endblock %}
 
