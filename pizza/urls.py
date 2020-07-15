@@ -21,6 +21,6 @@ urlpatterns = [
     path("", include("orders.urls")),
     # path("login/", auth_views.LoginView, name='login'),
     # path("logout/", auth_views.LogoutView, name='logout'),
-    path("admin/", admin.site.urls)    # ,
-    #path('accounts/', include('django.contrib.auth.urls'))
+    path("admin/", admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls'))
 ]
