@@ -146,13 +146,21 @@ def removefromorder(request,itemid):
     return redirect(index)
 
 def confirm(request):
-    cart = getAnyCart(request)
-    total = getTotal(request,cart)
-    context = {
-        "cart": cart,
-        "total": total
-        }
-    return render(request, "orders/confirm.html", context)
+
+    if request.user.is_authenticated:
+        # Do something for authenticated users.
+        cart = getAnyCart(request)
+        total = getTotal(request,cart)
+        context = {
+            "cart": cart,
+            "total": total
+            }
+        return render(request, "orders/confirm.html", context)
+    else:
+        # Do something for anonymous users.
+        message = "Please log in or register before completing your order."
+        context = {"message": message}
+        return render(request, "registration/register.html", context)
 
 def order(request, orderid):
     try:
@@ -179,9 +187,8 @@ def registerUser(request):
         regEmail = request.POST.get("regEmail")
         regPassword = request.POST.get("regPassword")
         confirmPassword = request.POST.get("confirmPassword")
-        existingUser = User.objects.get(username=regUsername)
-
-        if existingUser is not None:
+        
+        if User.objects.filter(username=regUsername).exists():
             message = "Username already taken. Please try a different username."
             context = {"message": message}
             return render(request, "registration/register.html", context)
