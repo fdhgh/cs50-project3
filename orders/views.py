@@ -1,6 +1,8 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
+from django.contrib.auth import logout, login
 import decimal
 from .models import *
 
@@ -36,6 +38,11 @@ def getTotal(request, cart):
     for item in items:
         total += item.price
     return total
+
+def addCartTo(request, user):
+    cart = getAnyCart(request)
+    cart.user = user
+    cart.save()
 
 def createContext(request, product, message):
     messages = [message]
@@ -165,3 +172,54 @@ def order(request, orderid):
             "message": message
         }
         return render(request, "orders/error.html", context)
+
+def registerUser(request):
+    if request.method == "POST":
+        regUsername = request.POST.get("regUsername")
+        regEmail = request.POST.get("regEmail")
+        regPassword = request.POST.get("regPassword")
+        confirmPassword = request.POST.get("confirmPassword")
+        existingUser = User.objects.get(username=regUsername)
+
+        if existingUser is not None:
+            message = "Username already taken. Please try a different username."
+            context = {"message": message}
+            return render(request, "registration/register.html", context)
+        elif regPassword != confirmPassword:
+            message = "Passwords must match."
+            context = {"message": message}
+            return render(request, "registration/register.html", context)
+        else:
+            # add user
+            user = User.objects.create_user(username=regUsername, email=regEmail, password=regPassword)
+            # login
+            login(request, user)
+            # add current cart to user
+            addCartTo(request,user)
+            return redirect(index)
+    else: # GET request
+        return render(request, "registration/register.html")
+
+def loginUser(request):
+    if request.method == "POST":
+        # get user credentials
+        username = request.POST.get("loginUsername")
+        password = request.POST.get("loginPassword")
+        # authenticate
+        try:
+            user = authenticate(username=username, password=password)
+        except NameError:
+            message = "Username or password is wrong. Please try again."
+            context = {"message": message}
+            return render(request, "registration/login.html", context)
+        login(request, user)
+        # add current cart to user
+        addCartTo(request,user)
+
+        return redirect(index)
+    else:
+        return render(request, "registration/login.html")
+
+def logoutUser(request):
+    logout(request)
+    return redirect(index)

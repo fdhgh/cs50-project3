@@ -10,6 +10,9 @@ urlpatterns = [
     path("addtoorder/<int:productid>", views.addtoorder, name="addtoorder"),
     path("removefromorder/<int:itemid>", views.removefromorder, name="removefromorder"),
     path("confirm", views.confirm, name="confirm"),
-    path("order/<int:orderid>", views.order, name="order")
+    path("order/<int:orderid>", views.order, name="order"),
+    path("login", views.loginUser, name="login"),
+    path("logout", views.logoutUser, name="logout"),
+    path("register", views.registerUser, name="register")
 
 ]
