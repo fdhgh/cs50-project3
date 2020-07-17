@@ -13,7 +13,7 @@
 
                       {% endfor %}
                       <hr>
-                      <p>Total: £{{total}}</p>
+                      <p>Total: £{{cart.totalPrice}}</p>
                       <p><a href="{% url 'confirm'%}">Confirm</a></p>
                     {% else %}
                       <p>Your cart is empty!</p>

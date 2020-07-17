@@ -10,6 +10,9 @@ from .models import *
 def newCart(request):
     newstatus = Status.objects.get(name="New")
     cart = Order(status=newstatus)
+    current_user = request.user
+    if current_user.is_authenticated:
+        cart.user = current_user
     cart.save()
     request.session['cart_id'] = cart.id
     return cart
@@ -32,13 +35,6 @@ def getAnyCart(request):
         cart = newCart(request)
     return cart
 
-def getTotal(request, cart):
-    total = decimal.Decimal(0)
-    items = cart.items.all()
-    for item in items:
-        total += item.price
-    return total
-
 def addCartTo(request, user):
     cart = getAnyCart(request)
     cart.user = user
@@ -59,11 +55,9 @@ def createContext(request, product, message):
         pizzatoppings = None
 
     cart = getCart(request)
-    total = getTotal(request,cart)
     context = {
         "product": product,
         "cart": cart,
-        "total": total,
         "producttoppings": producttoppings,
         "pizzatoppings": pizzatoppings,
         "messages": messages
@@ -75,13 +69,11 @@ def createContext(request, product, message):
 def index(request):
 
     cart = getCart(request)
-    total = getTotal(request, cart)
     producttypes = ProductType.objects.all()
 
     context = {
         "producttypes": producttypes,
-        "cart": cart,
-        "total": total
+        "cart": cart
         }
 
     return render(request, "orders/index.html", context)
@@ -150,10 +142,8 @@ def confirm(request):
     if request.user.is_authenticated:
         # Do something for authenticated users.
         cart = getAnyCart(request)
-        total = getTotal(request,cart)
         context = {
-            "cart": cart,
-            "total": total
+            "cart": cart
             }
         return render(request, "orders/confirm.html", context)
     else:
@@ -168,10 +158,8 @@ def order(request, orderid):
         paidStatus = Status.objects.get(name="Paid")
         cart.status=paidStatus
         cart.save()
-        total = getTotal(request,cart)
         context = {
-            "cart": cart,
-            "total": total
+            "cart": cart
             }
         return render(request, "orders/confirm.html", context)
     except ObjectDoesNotExist:
@@ -187,7 +175,7 @@ def registerUser(request):
         regEmail = request.POST.get("regEmail")
         regPassword = request.POST.get("regPassword")
         confirmPassword = request.POST.get("confirmPassword")
-        
+
         if User.objects.filter(username=regUsername).exists():
             message = "Username already taken. Please try a different username."
             context = {"message": message}
@@ -222,7 +210,6 @@ def loginUser(request):
         login(request, user)
         # add current cart to user
         addCartTo(request,user)
-
         return redirect(index)
     else:
         return render(request, "registration/login.html")
@@ -230,3 +217,25 @@ def loginUser(request):
 def logoutUser(request):
     logout(request)
     return redirect(index)
+
+def orderhistory(request):
+    current_user = request.user
+    if current_user.is_authenticated:
+        order_history = Order.objects.filter(user=current_user, items__isnull=False).order_by('-datemodified')
+        context = {"orders": order_history}
+        return render(request, "orders/orderhistory.html", context)
+    else:
+        message = "Please log in or register to view your order history."
+        context = {"message": message}
+        return render(request, "registration/login.html", context)
+
+def ordertickets(request, statusid=None):
+    statuses = Status.objects.all()
+    if statusid is not None:
+        status = Status.objects.get(id=statusid)
+        orders = Order.objects.filter(status=status).order_by('-datemodified')
+        context = {"orders": orders,
+                    "statuses": statuses}
+    else:
+        context = {"statuses": statuses}
+    return render(request, "orders/ordertickets.html", context)

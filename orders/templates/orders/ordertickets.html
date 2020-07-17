@@ -1,0 +1,34 @@
+{% extends "orders/base.html" %}
+{% block body %}
+                  <div>
+                    <p class="h3">Order Tickets</p>
+                    <div class="dropdown">
+                    <div class="dropdown">
+                      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Select order status to view
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {% for status in statuses.all %}
+                          <a class="dropdown-item" href="{% url 'ordertickets' status.id %}">{{status.name}}</a>
+                        {% endfor %}
+                      </div>
+                    </div>
+                    <br>
+                    {% for cart in orders.all %}
+                      <p class="h5">{{cart.datemodified}}</p>
+                      <p>{{cart.user.email}}</p>
+                        {% for item in cart.items.all %}
+                          <p>{{item.product.size}} {{ item.product.type.name }} {{item.product.variant.name}} £{{ item.price }}</p>
+                          {% if item.toppings.all|length > 0 %}
+                            {% for topping in item.toppings.all %}
+                              <p> + {{topping.name}} </p>
+                            {% endfor %}
+                          {% endif %}
+                        {% endfor %}
+                        <p>Total: £{{cart.totalPrice}}</p>
+                        <p><b>Order status: {{ cart.status }}</b></p>
+                        <br>
+                      {% endfor %}
+                      <p><a href="{% url 'menu'%}">Back to menu</a></p>
+                  </div>
+{% endblock %}

@@ -16,7 +16,7 @@
 
                       {% endfor %}
                       <hr>
-                      <p>Total: £{{total}}</p>
+                      <p>Total: £{{cart.totalPrice}}</p>
                       {% if cart.status.name == "New" %}
                         <p><a href="{% url 'order' cart.id%}">Place order</a></p>
                       {% elif cart.status.name == "Paid" %}

@@ -77,7 +77,7 @@ class Item(models.Model):
         return f"Item costs ${self.product.price}"
 
 class Status(models.Model):
-    name = models.CharField(max_length=64, primary_key=True)
+    name = models.CharField(max_length=64)
 
     def __str__(self):
         return f"{self.name}"
@@ -86,6 +86,15 @@ class Order(models.Model): # the latest order for the user represents the curren
     items = models.ManyToManyField(Item, blank=True, related_name="orders")
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE, blank=True, null=True, related_name="carts")
     status = models.ForeignKey(Status,on_delete=models.CASCADE, default=0, related_name="orders")
+    datemodified = models.DateTimeField(auto_now=True)
+
+    def calculateTotalPrice(self):
+        total = 0
+        for item in self.items.all():
+            total += item.price
+        return total
+
+    totalPrice = property(calculateTotalPrice)
 
     def __str__(self):
         return f"cart has {self.items.count()} items"
