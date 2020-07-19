@@ -98,3 +98,17 @@ class Order(models.Model): # the latest order for the user represents the curren
 
     def __str__(self):
         return f"cart has {self.items.count()} items"
+
+# class TicketsPermission(models.Model):
+#
+#     class Meta:
+#
+#         managed = False  # No database table creation or deletion  \
+#                          # operations will be performed for this model.
+#
+#         default_permissions = () # disable "add", "change", "delete"
+#                                  # and "view" default permissions
+#
+#         permissions = (
+#             ('view_tickets', 'Can view order tickets for all customers'),
+#         )

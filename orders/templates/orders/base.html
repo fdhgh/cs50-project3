@@ -35,7 +35,9 @@
                   {% endif %}
                   </p>
                   <p><a href="{% url 'orderhistory'%}">Order History</a></p>
-                  <p><a href="{% url 'ordertickets'%}">Order Tickets</a></p>
+                  {% if request.user.is_staff %}  
+                    <p><a href="{% url 'ordertickets'%}">Order Tickets</a></p>
+                  {% endif %}
                 </div>
               </div>
             </div>

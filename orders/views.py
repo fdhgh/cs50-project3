@@ -2,7 +2,9 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
-from django.contrib.auth import logout, login
+from django.contrib.auth import logout, login, authenticate
+from django.contrib.auth.decorators import permission_required
+from django.contrib.admin.views.decorators import staff_member_required
 import decimal
 from .models import *
 
@@ -201,15 +203,15 @@ def loginUser(request):
         username = request.POST.get("loginUsername")
         password = request.POST.get("loginPassword")
         # authenticate
-        try:
-            user = authenticate(username=username, password=password)
-        except NameError:
+        user = authenticate(username=username, password=password)
+        if user is None:
             message = "Username or password is wrong. Please try again."
             context = {"message": message}
             return render(request, "registration/login.html", context)
-        login(request, user)
-        # add current cart to user
-        addCartTo(request,user)
+        else:
+            login(request, user)
+            # add current cart to user
+            addCartTo(request,user)
         return redirect(index)
     else:
         return render(request, "registration/login.html")
@@ -229,6 +231,7 @@ def orderhistory(request):
         context = {"message": message}
         return render(request, "registration/login.html", context)
 
+@staff_member_required
 def ordertickets(request, statusid=None):
     statuses = Status.objects.all()
     if statusid is not None:
