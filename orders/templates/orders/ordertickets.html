@@ -1,7 +1,7 @@
 {% extends "orders/base.html" %}
 {% block body %}
                   <div>
-                    <p class="h3">Order Tickets</p>
+                    <p class="h3">Order Tickets{% if currentstatus is not None %}: {{currentstatus.name}} {% endif %}</p>
                     <div class="dropdown">
                     <div class="dropdown">
                       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -27,6 +27,9 @@
                         {% endfor %}
                         <p>Total: £{{cart.totalPrice}}</p>
                         <p><b>Order status: {{ cart.status }}</b></p>
+                        {% if nextstatus is not None %}
+                          <p><a href="{% url 'incrementstatus' cart.id %}" method="post"> Set status to {{ nextstatus.name }}</a></p>
+                        {% endif %}
                         <br>
                       {% endfor %}
                       <p><a href="{% url 'menu'%}">Back to menu</a></p>

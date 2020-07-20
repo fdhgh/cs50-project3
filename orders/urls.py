@@ -14,6 +14,7 @@ urlpatterns = [
     path("orderhistory", views.orderhistory, name="orderhistory"),
     path("ordertickets", views.ordertickets, name="ordertickets"),
     path("ordertickets/<int:statusid>", views.ordertickets, name="ordertickets"),
+    path("incrementstatus/<int:orderid>", views.incrementstatus, name="incrementstatus"),
     path("login", views.loginUser, name="login"),
     path("logout", views.logoutUser, name="logout"),
     path("register", views.registerUser, name="register")

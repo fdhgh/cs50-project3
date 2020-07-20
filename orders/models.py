@@ -8,9 +8,6 @@ class Size(models.Model):
     def __str__(self):
         return f"{self.name}"
 
-class PizzaBase(models.Model):
-    name = models.CharField(max_length=16, primary_key=True)
-
 class Variant(models.Model): # fillings, right hand side of menu
     name = models.CharField(max_length=64, primary_key=True)
     includedtoppings = models.IntegerField(default=0)
@@ -50,12 +47,8 @@ class Product(models.Model):
 
     toppingaddpricelist = property(listToppingAddPrice)
 
-
     def __str__(self):
         return f"{self.size.name} {self.type.name}: {self.variant.name} - ${self.price}"
-
-# class Pizza(Product):
-#     base = models.ForeignKey(PizzaBase, on_delete=models.CASCADE, related_name="pizzas",blank=True)#null=True because some menu items have no base
 
 class ToppingAddPrice(models.Model):
     topping = models.ForeignKey(Topping, on_delete=models.CASCADE, related_name="toppingprices")

@@ -67,6 +67,13 @@ def createContext(request, product, message):
 
     return context
 
+def getNextStatus(prevstatus):
+    try:
+        newstatus = Status.objects.get(id=(prevstatus.id+1))
+        return newstatus
+    except ObjectDoesNotExist:
+        return None
+
 # Create your views here.
 def index(request):
 
@@ -83,10 +90,7 @@ def index(request):
 
 def create(request, productid):
     product = Product.objects.get(id=productid)
-
     context = createContext(request, product, "")
-
-    print(context)
     return render(request, "orders/create.html", context)
 
 
@@ -102,9 +106,7 @@ def addtoorder(request, productid):
         item = Item(product=product,price=price)     # ManyToManyField items can't be added to a model until after it's been saved. https://stackoverflow.com/a/18801489/13800944
         item.save()
         for t in toppings:
-            print("topping id: " + str(t))
             tap = ToppingAddPrice.objects.get(id=t)
-            print("topping name: " + str(tap.topping.name))
             price += tap.addprice
             item.toppings.add(tap.topping)
 
@@ -119,7 +121,6 @@ def addtoorder(request, productid):
         return render(request, "orders/create.html", context)
 
     for pt in pizzatoppings:
-        print(pt)
         ptt = Topping.objects.get(name=pt)
         item.toppings.add(ptt)
 
@@ -237,8 +238,28 @@ def ordertickets(request, statusid=None):
     if statusid is not None:
         status = Status.objects.get(id=statusid)
         orders = Order.objects.filter(status=status).order_by('-datemodified')
+        nextstatus = getNextStatus(status)
         context = {"orders": orders,
-                    "statuses": statuses}
+                    "statuses": statuses,
+                    "currentstatus": status,
+                    "nextstatus": nextstatus}
     else:
         context = {"statuses": statuses}
     return render(request, "orders/ordertickets.html", context)
+
+
+@staff_member_required
+def incrementstatus(request, orderid):
+    order = Order.objects.get(id=orderid)
+    prevstatus = order.status
+    newstatus = getNextStatus(prevstatus)
+    if newstatus is not None:
+        order.status = newstatus
+        order.save()
+        return redirect('ordertickets',statusid=prevstatus.id)
+    else:
+        message = f"Order with ID {order.id} is at the final status {order.status.name}"
+        context = {
+            "message": message
+        }
+        return render(request, "orders/error.html", context)
