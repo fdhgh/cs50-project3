@@ -17,6 +17,6 @@ Future improvements:
 * General UX such as Javascript enhancements, modernised components, stronger branding, and accessibility
  * Menu layout could be displayed as tiles
  * More customisation options on the product page, moving these off the menu page and tidying it up
-* Performance - currently the menu is noticeably sluggish due to use of nested loops
+* Performance - some refactoring can probably be done
 * Security - Django provides XSS protection as standard but could this be improved?
 * Django version upgrade
