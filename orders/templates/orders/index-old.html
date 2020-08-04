@@ -1,0 +1,45 @@
+{% extends "orders/cartbase.html" %}
+
+{% block script %}
+{% load static %}
+  <script src="{% static "orders/index.js" %}"></script>
+{% endblock %}
+
+{% block title %}
+    index
+{% endblock %}
+
+
+{% block left %}
+{% endblock %}
+
+{% block body %}
+  {% for pt in producttypes %}
+    <p class="h4">{{pt.name}}</p>
+    {% for pv in pt.availablevariants.all %}
+      <p><b>{{pv.name}} </b>
+        {% for p in pt.productlist %}
+          {% if p.variant == pv %}
+             {{ p.size.name }}: <a href="{% url 'create' p.id %}"> ${{ p.price }} </a>
+             {% if p.toppingaddpricelist|length > 0 %}
+              (
+               {% for t in p.toppingaddpricelist %}
+                 {{t.topping.name}} +${{t.addprice}}
+               {% endfor %}
+               )
+             {% endif %}
+
+          {% endif %}
+        {% endfor %}
+        <!-- {% for p in pt.productlist %}
+          {% if p.variant == pv %}
+          {% endif %}
+        {% endfor %} -->
+      </p>
+    {% endfor %}
+  {% endfor %}
+{% endblock %}
+
+
+{% block right %}
+{% endblock %}

@@ -5,18 +5,18 @@
                     <br>
                     {% for cart in orders.all %}
                       <p class="h5">{{cart.datemodified}}</p>
-                        {% for item in cart.items.all %}
-                          <p>{{item.product.size}} {{ item.product.type.name }} {{item.product.variant.name}} £{{ item.price }}</p>
-                          {% if item.toppings.all|length > 0 %}
-                            {% for topping in item.toppings.all %}
-                              <p> + {{topping.name}} </p>
-                            {% endfor %}
-                          {% endif %}
-                        {% endfor %}
-                        <p>Total: £{{cart.totalPrice}}</p>
-                        <p><b>Order status: {{ cart.status }}</b></p>
-                        <br>
+                      {% for item in cart.items.all %}
+                        <p>{{item.productsizeprice.size}} {{ item.productsizeprice.product.type.name }} {{item.productsizeprice.product.variant.name}} £{{ item.price }}</p>
+                        {% if item.toppings.all|length > 0 %}
+                          {% for topping in item.toppings.all %}
+                            <p> + {{topping.name}} </p>
+                          {% endfor %}
+                        {% endif %}
                       {% endfor %}
-                      <p><a href="{% url 'menu'%}">Back to menu</a></p>
+                      <p>Total: £{{cart.totalPrice}}</p>
+                      <p><b>Order status: {{ cart.status }}</b></p>
+                      <br>
+                    {% endfor %}
+                    <p><a href="{% url 'menu'%}">Back to menu</a></p>
                   </div>
 {% endblock %}

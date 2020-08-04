@@ -56,12 +56,14 @@ def createContext(request, product, message):
     else:
         pizzatoppings = None
 
+    productsizeprices = ProductSizePrice.objects.filter(product=product).all()
     cart = getCart(request)
     context = {
         "product": product,
         "cart": cart,
         "producttoppings": producttoppings,
         "pizzatoppings": pizzatoppings,
+        "productsizeprices": productsizeprices,
         "messages": messages
         }
 
@@ -97,18 +99,21 @@ def create(request, productid):
 def addtoorder(request, productid):
 
     product = Product.objects.get(id=productid)
-    price  = product.price
     toppings = request.POST.getlist('toppings')
+    pspid = request.POST.get('sizeradio')
+    productsizeprice = ProductSizePrice.objects.get(id=pspid)
+    price=productsizeprice.price
 
-    try:
-        item = Item.objects.get(product=product,toppings=toppings,price=price)
-    except ObjectDoesNotExist:
-        item = Item(product=product,price=price)     # ManyToManyField items can't be added to a model until after it's been saved. https://stackoverflow.com/a/18801489/13800944
-        item.save()
-        for t in toppings:
-            tap = ToppingAddPrice.objects.get(id=t)
-            price += tap.addprice
-            item.toppings.add(tap.topping)
+    # try:
+    #     item = Item.objects.filter(productsizeprice=productsizeprice,toppings=toppings).first()
+    # except ObjectDoesNotExist:
+    item = Item(productsizeprice=productsizeprice,price=price)     # ManyToManyField items can't be added to a model until after it's been saved. https://stackoverflow.com/a/18801489/13800944
+    item.save()
+    for t in toppings:
+        tap = ToppingAddPrice.objects.get(id=t)
+        price += tap.addprice
+        item.toppings.add(tap.topping)
+    item.price = price
 
     pizzatoppings = request.POST.getlist('pizzatoppings')
     if len(pizzatoppings) > product.variant.includedtoppings:
@@ -124,7 +129,6 @@ def addtoorder(request, productid):
         ptt = Topping.objects.get(name=pt)
         item.toppings.add(ptt)
 
-    item.price = price
     item.save()
 
     cart = getCart(request)
@@ -224,8 +228,9 @@ def logoutUser(request):
 def orderhistory(request):
     current_user = request.user
     if current_user.is_authenticated:
-        order_history = Order.objects.filter(user=current_user, items__isnull=False).order_by('-datemodified')
+        order_history = Order.objects.filter(user=current_user, items__isnull=False).distinct().order_by('-datemodified') #, items__isnull=False
         context = {"orders": order_history}
+        print(order_history)
         return render(request, "orders/orderhistory.html", context)
     else:
         message = "Please log in or register to view your order history."

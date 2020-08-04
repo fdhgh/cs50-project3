@@ -18,7 +18,7 @@
                       <p class="h5">{{cart.datemodified}}</p>
                       <p>{{cart.user.email}}</p>
                         {% for item in cart.items.all %}
-                          <p>{{item.product.size}} {{ item.product.type.name }} {{item.product.variant.name}} £{{ item.price }}</p>
+                          <p>{{item.productsizeprice.size}} {{ item.productsizeprice.product.type.name }} {{item.productsizeprice.product.variant.name}} £{{ item.price }}</p>
                           {% if item.toppings.all|length > 0 %}
                             {% for topping in item.toppings.all %}
                               <p> + {{topping.name}} </p>

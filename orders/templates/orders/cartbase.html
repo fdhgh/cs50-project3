@@ -4,7 +4,7 @@
                     <p class="h3">Cart</p>
                     {% if cart.items.all|length > 0 %}
                       {% for item in cart.items.all %}
-                        <p>{{item.product.size}} {{ item.product.type.name }} {{item.product.variant.name}} £{{ item.price }}<a href="{% url 'removefromorder' item.id %}" method="post"> X </a></p>
+                        <p>{{item.productsizeprice.size}} {{ item.productsizeprice.product.type.name }} {{item.productsizeprice.product.variant.name}} £{{ item.price }}<a href="{% url 'removefromorder' item.id %}" method="post"> X </a></p>
                         {% if item.toppings.all|length > 0 %}
                           {% for topping in item.toppings.all %}
                             <p> + {{topping.name}} </p>

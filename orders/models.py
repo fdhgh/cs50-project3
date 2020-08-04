@@ -1,10 +1,12 @@
 from django.db import models
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your models here.
 
 class Size(models.Model):
-    name = models.CharField(max_length=16, primary_key=True)
+    name = models.CharField(max_length=16)
+
     def __str__(self):
         return f"{self.name}"
 
@@ -18,29 +20,31 @@ class Topping(models.Model):
 class ProductType(models.Model):
     name = models.CharField(max_length=64, primary_key=True)
     availablevariants = models.ManyToManyField(Variant, blank=True, related_name="oftypes")
-
+    availablesizes = models.ManyToManyField(Size, blank=True, related_name="oftypes")
     def listproducts(self):
-        return Product.objects.filter(type = self).order_by('variant','-size')
-
-    def listsizes(self):
-        sizelist = []
-        for p in self.productlist:
-            if p.size not in sizelist:
-                sizelist.append(p.size)
-        return sizelist
-
+        return Product.objects.filter(type = self).order_by('variant')
     productlist = property(listproducts)
-    sizelist = property(listsizes)
-
 
 class Product(models.Model):
+
     type = models.ForeignKey(ProductType, on_delete=models.CASCADE, related_name="products")
     variant = models.ForeignKey(Variant, on_delete=models.CASCADE, related_name="products")
-    size = models.ForeignKey(Size, on_delete=models.CASCADE, related_name="products")
-    price =  models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
-       unique_together = ('type', 'variant', 'size', 'price')
+       unique_together = ('type', 'variant')
+
+    def getPriceList(self):
+        pricelist=[]
+        for s in self.type.availablesizes.all():
+            try:
+                psp = ProductSizePrice.objects.get(product=self,size=s)
+                p=psp.price
+            except ObjectDoesNotExist:
+                p = ""
+            pricelist.append(p)
+        return pricelist
+
+    pricelist = property(getPriceList)
 
     def listToppingAddPrice(self):
         return ToppingAddPrice.objects.filter(product=self)
@@ -48,26 +52,33 @@ class Product(models.Model):
     toppingaddpricelist = property(listToppingAddPrice)
 
     def __str__(self):
-        return f"{self.size.name} {self.type.name}: {self.variant.name} - ${self.price}"
+        return f"{self.type.name}: {self.variant.name}"
+
+class ProductSizePrice(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="sizeprices")
+    size = models.ForeignKey(Size, on_delete=models.CASCADE, related_name="prices")
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+
+    class Meta:
+       unique_together = ('product', 'price', "size")
 
 class ToppingAddPrice(models.Model):
     topping = models.ForeignKey(Topping, on_delete=models.CASCADE, related_name="toppingprices")
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="availabletoppings")
     addprice = models.DecimalField(max_digits=10, decimal_places=2)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="availabletoppings")
 
     class Meta:
        unique_together = ('topping', 'product')
 
-    def __str__(self):
-        return f"here you go: {self.product.size.name}"
-
 class Item(models.Model):
-    product = models.ForeignKey(Product,on_delete=models.CASCADE, related_name="items")
+    productsizeprice = models.ForeignKey(ProductSizePrice,on_delete=models.CASCADE, related_name="items")
     toppings = models.ManyToManyField(Topping, blank=True, related_name="items")
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10,decimal_places=2)
 
     def __str__(self):
-        return f"Item costs ${self.product.price}"
+        return f"Item costs ${self.price}"
+
 
 class Status(models.Model):
     name = models.CharField(max_length=64)
@@ -88,6 +99,10 @@ class Order(models.Model): # the latest order for the user represents the curren
         return total
 
     totalPrice = property(calculateTotalPrice)
+
+    def countItems(self):
+        return self.items.count()
+    itemscount = property(countItems)
 
     def __str__(self):
         return f"cart has {self.items.count()} items"

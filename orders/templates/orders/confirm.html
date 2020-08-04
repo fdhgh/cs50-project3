@@ -3,7 +3,7 @@
                   <div>
                     <p class="h3">Cart</p>
                       {% for item in cart.items.all %}
-                        <p>{{item.product.size}} {{ item.product.type.name }} {{item.product.variant.name}} £{{ item.price }}
+                        <p>{{item.productsizeprice.size}} {{ item.productsizeprice.product.type.name }} {{item.productsizeprice.product.variant.name}} £{{ item.price }}
                           {% if cart.status.name == "New" %}
                             <a href="{% url 'removefromorder' item.id %}" method="post"> X </a>
                           {% endif %}
