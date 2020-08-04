@@ -30,27 +30,36 @@ class Command(BaseCommand):
     productData = list(productReader)
 
     ## import Products
-    for productname, basename, variantname, sizename, price, includedtoppings in productData:
+    for productname, basename, variantname, sizename, pricevalue, includedtoppings in productData:
 
         if basename != '': # non-pizza products have no base
             productname = basename + ' ' + productname
 
+        price = toCents(pricevalue)
         type = checkadd(productname, ProductType)
         variant = checkadd(variantname, Variant)
         size = checkadd(sizename, Size)
         type.availablevariants.add(variant)
+        type.availablesizes.add(size)
 
         if includedtoppings != '':
             variant.includedtoppings = int(includedtoppings)
             variant.save()
 
-        product = Product(type=type,variant=variant,size=size,price=toCents(price))
 
         try:
-            product = Product.objects.get(type=type, variant=variant, size=size)
-            print(f'product already exists: {productname} {variantname} {sizename}')
+            product = Product.objects.get(type=type, variant=variant)
+            print(f'product already exists: {productname} {variantname}')
         except Product.DoesNotExist:
+            product = Product(type=type,variant=variant)
             product.save()
+
+        try:
+            productsizeprice = ProductSizePrice.objects.get(product=product,size=size,price=price)
+            print(f'product size price already exists: {productname} {variantname} {sizename}')
+        except ProductSizePrice.DoesNotExist:
+            productsizeprice = ProductSizePrice(product=product,size=size,price=price)
+            productsizeprice.save()
 
     f2 = open("orders/management/data/menu_toppings.csv")
     toppingReader = csv.reader(f2)
@@ -66,16 +75,21 @@ class Command(BaseCommand):
         size = checkadd(sizename, Size)
 
         try:
-            product = Product.objects.get(type=producttype, variant=variant, size=size)
+            product = Product.objects.get(type=producttype, variant=variant)
+            # productsizeprice = ProductSizePrice.objects.get(product=product, size=size)
+
             try:
-                tap = ToppingAddPrice.objects.get(topping = topping, product=product)
-                print(f'ToppingAddPrice already exists: {toppingname} on {productname} {variantname} {sizename}')
+                tap = ToppingAddPrice.objects.get(topping=topping, product=product)
+                print(f'ToppingAddPrice already exists: {toppingname} on {productname} {variantname}')
             except ToppingAddPrice.DoesNotExist:
                 tap = ToppingAddPrice(topping = topping, product=product, addprice=toCents(addprice))
                 tap.save()
                 print('obj added: ToppingAddPrice ' + toppingname)
         except Product.DoesNotExist:
-            print(f'topping not added: {toppingname} on {productname} {variantname} {sizename} - no such product exists.')
+            print(f'topping not added: {toppingname} on {productname} {variantname} - no such product exists.')
+        # except ProductSizePrice.DoesNotExist:
+        #     print(f'topping not added: {toppingname} on {productname} {variantname} {sizename} - no such productsizeprice exists.')
+
 
 
     statusnames = ["New","Paid","Accepted","Out for delivery","Delivered"]

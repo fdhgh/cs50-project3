@@ -16,27 +16,35 @@
 {% block body %}
   {% for pt in producttypes %}
     <p class="h4">{{pt.name}}</p>
-    {% for pv in pt.availablevariants.all %}
-      <p><b>{{pv.name}} </b>
-        {% for p in pt.productlist %}
-          {% if p.variant == pv %}
-             {{ p.size.name }}: <a href="{% url 'create' p.id %}"> ${{ p.price }} </a>
-             {% if p.toppingaddpricelist|length > 0 %}
-              (
-               {% for t in p.toppingaddpricelist %}
-                 {{t.topping.name}} +${{t.addprice}}
-               {% endfor %}
-               )
-             {% endif %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col"> </th>
+          {% for s in pt.availablesizes.all %}
+            <th scope="col">{{s.name}}</th>
+          {% endfor %}
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
 
-          {% endif %}
-        {% endfor %}
-        <!-- {% for p in pt.productlist %}
-          {% if p.variant == pv %}
-          {% endif %}
-        {% endfor %} -->
-      </p>
-    {% endfor %}
+        {% for p in pt.productlist %}
+          <tr>
+            <th scope="row"><a href="{% url 'create' p.id %}"> {{ p.variant.name }} </a></th>
+              {% for price in p.pricelist %}
+                <td scope="col"> {% if price != "" %}${% endif %}{{ price }} </td>
+              {% endfor %}
+              <td scope="col">
+                {% if p.toppingaddpricelist|length > 0 %}
+                    {% for t in p.toppingaddpricelist %}
+                      <p>{{t.topping.name}} +${{t.addprice}}</p>
+                    {% endfor %}
+                {% endif %}
+              </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
   {% endfor %}
 {% endblock %}
 

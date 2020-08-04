@@ -12,6 +12,12 @@
   <p class="h3">{{product}}</p>
     <form action="{% url 'addtoorder' product.id %}" method="post">
         {% csrf_token %}
+
+        <div>
+          {% for psp in productsizeprices %}
+            <label class="radio-inline"><input type="radio" name="sizeradio" value="{{ psp.id }}" required>{{psp.size.name}} - ${{psp.price}}</label>
+          {% endfor %}
+        </div>
         {% if producttoppings|length > 0 %}
             {% for t in producttoppings %}
               <div class="form-check">
